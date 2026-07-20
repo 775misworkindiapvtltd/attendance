@@ -13,7 +13,8 @@
  *   Admin.html     (admin shell: left sidebar, Punch Entries, Employees, view-details modal)
  *
  * REQUIRED GOOGLE SHEET TABS (created automatically the first time doGet runs,
- * or you can run setupSheets() once from the Apps Script editor):
+ * or you can run setupSheets() once from the Apps Script editor, or click the
+ * "🕒 Attendance Setup" menu in the Sheet itself):
  *
  *   Employees  -> Employee ID | Name | Department | Role | Password | Active
  *                 Role must be exactly "Admin" or "Employee". Active must be YES/NO.
@@ -22,6 +23,12 @@
  *                 Working Hours | Status | Latitude In | Longitude In | Address In |
  *                 Selfie In | Latitude Out | Longitude Out | Address Out | Selfie Out |
  *                 Device | Browser | Late In | Early Out | Remarks
+ *
+ *   Settings   -> Company Name | In Time | Out Time | Allow Late Time (mins)
+ *                 Single active config row (row 2). Editable from the Admin ->
+ *                 Settings page in the app, or directly in the sheet.
+ *                 "Allow Late Time" is a grace period: punching in within this
+ *                 many minutes after In Time still counts as On Time.
  *
  * DEPLOY: Deploy > New deployment > type "Web app" > Execute as "Me" >
  *         Who has access "Anyone" (or "Anyone with Google account") > Deploy.
@@ -76,7 +83,7 @@ function onOpen() {
 function setupSheets() {
   ensureSheets_();
   try {
-    SpreadsheetApp.getUi().alert('✅ Done! "Employees" and "Attendance" sheets are ready to use.');
+    SpreadsheetApp.getUi().alert('✅ Done! "Employees", "Attendance" and "Settings" sheets are ready to use.');
   } catch (err) {
     // getUi() fails when run from the Apps Script editor without a UI context — that's fine, sheets are still created.
   }
