@@ -55,7 +55,29 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-/** One-time manual setup helper — run this once from the Apps Script editor if you prefer not to rely on doGet auto-setup. */
+/**
+ * Adds a custom menu ("🕒 Attendance Setup") to the Google Sheet's menu bar
+ * every time the spreadsheet is opened, so the sheets can be created with a
+ * simple click — no need to open the Apps Script editor at all.
+ */
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('🕒 Attendance Setup')
+    .addItem('▶ Create / Repair Sheets Now', 'setupSheets')
+    .addToUi();
+}
+
+/**
+ * One-click setup: creates the Employees / Attendance tabs (with sample rows)
+ * if they don't already exist, and shows a confirmation popup.
+ * Can be triggered either from the "🕒 Attendance Setup" menu in the Sheet,
+ * or by running it directly from the Apps Script editor (click ▶ Run).
+ */
 function setupSheets() {
   ensureSheets_();
+  try {
+    SpreadsheetApp.getUi().alert('✅ Done! "Employees" and "Attendance" sheets are ready to use.');
+  } catch (err) {
+    // getUi() fails when run from the Apps Script editor without a UI context — that's fine, sheets are still created.
+  }
 }
